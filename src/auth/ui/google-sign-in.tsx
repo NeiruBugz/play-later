@@ -32,5 +32,5 @@ export default function GoogleSignIn() {
     });
   };
 
-  return <Button onClick={onLogin}>Sign In with Google</Button>;
+  return <Button className="max-w-[256px]" onClick={onLogin}>Sign In with Google</Button>;
 }

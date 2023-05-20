@@ -7,12 +7,113 @@ import { useAuthStore } from "@/src/auth/lib/store";
 import { collection, query, where } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 
-import { firebaseDB } from "@/lib/firebase";
+import { changeGameStatus, firebaseDB } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import { Label } from "@/components/ui/label";
 
 const platformFilters = ["", "playstation", "nintendo", "xbox"];
+
+interface CardProps {
+  id: string;
+  title: string;
+  platform: string;
+  updateStatus: (status: string, id: string) => Promise<void>;
+  img?: string;
+}
+
+function Card({ id, title, img, platform, updateStatus }: CardProps) {
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger>
+        <div className="card image-full relative h-48 w-48 rounded-sm shadow-sm cursor-pointer">
+          <figure>
+            <Image
+              priority
+              alt={`${title} poster`}
+              src={img ? img : "https://placehold.jp/1000x1000.png"}
+              className="h-48 w-48 rounded-sm object-cover"
+              width={256}
+              height={256}
+            />
+          </figure>
+          <div className="max-h-1/3 absolute  bottom-0 left-0 w-full ">
+            <div className="rounded-b-sm bg-gradient-to-r from-[#2d2d2d] to-transparent p-2 md:py-4 md:pl-4">
+              <h2 className="mb-2 truncate text-[1.2em] font-bold text-white">
+                {title}
+              </h2>
+              <Badge
+                variant="platform"
+                className={cn("capitalize text-white", {
+                  "bg-nintendo": platform.toLowerCase() === "nintendo",
+                  "bg-playstation": platform.toLowerCase() === "playstation",
+                  "bg-xbox": platform.toLowerCase() === "xbox",
+                  "bg-pc uppercase": platform.toLowerCase() === "pc",
+                })}
+              >
+                {platform}
+              </Badge>
+            </div>
+          </div>
+        </div>
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem onSelect={() => updateStatus("backlog", id)}>
+          To Backlog
+        </ContextMenuItem>
+        <ContextMenuItem onSelect={() => updateStatus("in-progress", id)}>
+          Start
+        </ContextMenuItem>
+        <ContextMenuItem onSelect={() => updateStatus("completed", id)}>
+          Complete
+        </ContextMenuItem>
+        <ContextMenuItem onSelect={() => updateStatus("abandoned", id)}>
+          Abandon
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
+
+function FiltersList({
+  changeFilter,
+}: {
+  changeFilter: (filter: string) => void;
+}) {
+  return (
+    <>
+      <Label>Platform Filters</Label>
+      <div className="w-full">
+        <Badge className="mr-2 cursor-pointer" onClick={() => changeFilter("")}>
+          All
+        </Badge>
+        {platformFilters.map(
+          (platform) =>
+            Boolean(platform) && (
+              <Badge
+                key={platform}
+                className={cn("mr-2 cursor-pointer capitalize text-white", {
+                  "bg-nintendo": platform.toLowerCase() === "nintendo",
+                  "bg-playstation": platform.toLowerCase() === "playstation",
+                  "bg-xbox": platform.toLowerCase() === "xbox",
+                  "bg-pc uppercase": platform.toLowerCase() === "pc",
+                })}
+                onClick={() => changeFilter(platform)}
+              >
+                {platform}
+              </Badge>
+            )
+        )}
+      </div>
+    </>
+  );
+}
 
 export default function List() {
   const { uid } = useAuthStore();
@@ -60,74 +161,24 @@ export default function List() {
     return result;
   }, [list, platformFilter, params]);
 
+  const updateStatus = async (status: string, id: string) => {
+    await changeGameStatus(status, id);
+  };
+
   return (
     <div className="py-4">
-      <>
-        <Label>Platform Filters</Label>
-        <div className="w-full">
-          <Badge
-            className="mr-2 cursor-pointer"
-            onClick={() => setPlatformFilter("")}
-          >
-            All
-          </Badge>
-          {platformFilters.map(
-            (platform) =>
-              Boolean(platform) && (
-                <Badge
-                  key={platform}
-                  className={cn("mr-2 cursor-pointer capitalize text-white", {
-                    "bg-nintendo": platform.toLowerCase() === "nintendo",
-                    "bg-playstation": platform.toLowerCase() === "playstation",
-                    "bg-xbox": platform.toLowerCase() === "xbox",
-                    "bg-pc uppercase": platform.toLowerCase() === "pc",
-                  })}
-                  onClick={() => setPlatformFilter(platform)}
-                >
-                  {platform}
-                </Badge>
-              )
-          )}
-        </div>
-      </>
-      <div className="mt-4 flex flex-wrap gap-x-2 gap-y-4">
-        {filteredGames.map(({ title, platform, img, id }) => {
-          return (
-            <div
-              className="md:h-68 md:w-68 card image-full relative h-56 w-56 cursor-pointer rounded-sm sm:h-64 sm:w-64"
-              key={id}
-            >
-              <figure>
-                <Image
-                  priority
-                  alt={`${title} poster`}
-                  src={img ? img : "https://placehold.jp/1000x1000.png"}
-                  className="md:h-68 md:w-68 h-56 w-56 rounded-sm object-cover sm:h-64 sm:w-64"
-                  width={256}
-                  height={256}
-                />
-              </figure>
-              <div className="card-body h-/14 max-h-1/3 absolute  bottom-0 left-0 w-full ">
-                <div className="rounded-b-sm bg-gradient-to-r from-[#2d2d2d] to-transparent p-2 md:py-4 md:pl-4">
-                  <h2 className="mb-2 truncate text-[1.2em] font-bold text-white">
-                    {title}
-                  </h2>
-                  <Badge
-                    className={cn("capitalize text-white", {
-                      "bg-nintendo": platform.toLowerCase() === "nintendo",
-                      "bg-playstation":
-                        platform.toLowerCase() === "playstation",
-                      "bg-xbox": platform.toLowerCase() === "xbox",
-                      "bg-pc uppercase": platform.toLowerCase() === "pc",
-                    })}
-                  >
-                    {platform}
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+      <FiltersList changeFilter={setPlatformFilter} />
+      <div className="mt-4 flex flex-wrap justify-start gap-4">
+        {filteredGames.map(({ title, platform, img, id }) => (
+          <Card
+            key={id}
+            id={id}
+            title={title}
+            img={img}
+            platform={platform}
+            updateStatus={updateStatus}
+          />
+        ))}
       </div>
     </div>
   );

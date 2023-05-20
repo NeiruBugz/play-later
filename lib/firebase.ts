@@ -1,6 +1,12 @@
 import { FirebaseOptions, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { addDoc, collection, getFirestore } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getFirestore,
+  updateDoc,
+} from "firebase/firestore";
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -19,4 +25,15 @@ const firebaseDB = getFirestore(firebaseApp);
 const addGame = async (data: any, collectionName: string) =>
   await addDoc(collection(firebaseDB, collectionName), { ...data });
 
-export { firebaseApp, firebaseAuth, firebaseDB, addGame };
+const changeGameStatus = async (status: string, gameId: string) => {
+  const ref = doc(firebaseDB, "games", gameId);
+  try {
+    await updateDoc(ref, {
+      status: status,
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export { firebaseApp, firebaseAuth, firebaseDB, addGame, changeGameStatus };

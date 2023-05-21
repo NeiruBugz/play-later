@@ -31,11 +31,13 @@ type Fields = z.infer<typeof schema>;
 function SuggestBox({
   results,
   onSelect,
+  show,
 }: {
   results: any[];
   onSelect: (payload: { title: string; id: string; img?: string }) => void;
+  show?: boolean;
 }) {
-  return (
+  return results.length !== 0 && show ? (
     <div className="absolute z-10 w-full rounded-md bg-background shadow-md p-1">
       {results.map((result) => (
         <div
@@ -53,13 +55,14 @@ function SuggestBox({
         </div>
       ))}
     </div>
+  ) : (
+    <></>
   );
 }
 
 export default function Form() {
   const params = useSearchParams();
   const router = useRouter();
-  const ref = React.useRef<HTMLElement>(null);
   const { register, control, handleSubmit, watch, ...methods } =
     useForm<Fields>({
       resolver: zodResolver(schema),
@@ -70,23 +73,32 @@ export default function Form() {
       },
     });
   const gameTitle = watch("title");
-  const [gameInfo, setGameInfo] = React.useState({});
+  const [gameInfo, setGameInfo] = React.useState<{
+    title: string;
+    id: string;
+    img?: string;
+  }>();
+  const [isGameSelected, setGameSelected] = React.useState(false);
 
   const { uid } = useAuthStore();
-  const { data: searchResults, refetch } = useSearch(gameTitle);
+  const { data: searchResults, refetch, remove } = useSearch(gameTitle, false);
 
   React.useEffect(() => {
-    if (gameTitle.length !== 0) {
+    if (gameTitle.length !== 0 && !isGameSelected) {
       refetch();
     }
-  }, [gameTitle]);
+
+    if (gameTitle.length === 0) {
+      setGameSelected(false);
+    }
+  }, [gameTitle, refetch, isGameSelected]);
 
   const onSubmit = async (values: Fields) => {
     try {
       const gameData = {
         user: uid,
         id: params.get("id"),
-        img: params.get("image"),
+        img: params.get("image") ?? gameInfo?.img,
         ...values,
       };
       await addGame(gameData, "games");
@@ -98,12 +110,11 @@ export default function Form() {
 
   const onGameSelect = (value: { title: string; id: string; img?: string }) => {
     setGameInfo(value);
+    setGameSelected(true);
+    remove();
     methods.setValue("title", value.title);
   };
 
-  console.log(gameInfo);
-  console.log(searchResults);
-  console.log(ref.current?.getBoundingClientRect().width);
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
       <div className="w-full relative">
@@ -114,7 +125,11 @@ export default function Form() {
           className="w-full"
           {...register("title")}
         />
-        <SuggestBox results={searchResults} onSelect={onGameSelect} />
+        <SuggestBox
+          show={!isGameSelected}
+          results={searchResults}
+          onSelect={onGameSelect}
+        />
       </div>
       <div className="w-full">
         <Label htmlFor="platform">Platform</Label>

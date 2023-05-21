@@ -19,6 +19,9 @@ export function useSearch(searchTerm: string, enabled?: boolean) {
     retryDelay: 3000,
     enabled,
     initialData: [],
+    onError: (error) => {
+      console.error(error);
+    },
   });
 }
 

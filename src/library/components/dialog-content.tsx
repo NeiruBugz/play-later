@@ -27,7 +27,7 @@ const reviewSchema = z.object({
 
 function ReviewForm({ id }: { id: string }) {
   const form = useForm<z.infer<typeof reviewSchema>>({
-    mode: "all",
+    mode: "onSubmit",
     resolver: zodResolver(reviewSchema),
   });
   const onSubmit = async (data: z.infer<typeof reviewSchema>) => {

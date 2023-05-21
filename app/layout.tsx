@@ -46,7 +46,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <AuthProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
               <Query>
-                <div className="relative flex min-h-screen flex-col">
+                <div className="relative flex h-screen flex-col">
                   <SiteHeader />
                   {children}
                 </div>

@@ -1,125 +1,19 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/src/auth/lib/store";
+import { Card } from "@/src/library/components/card";
 import { collection, query, where } from "firebase/firestore";
-import { MoreVertical } from "lucide-react";
 import { useCollection } from "react-firebase-hooks/firestore";
 
-import { changeGameStatus, firebaseDB } from "@/lib/firebase";
+import { firebaseDB, firestoreOperations } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const platformFilters = ["", "playstation", "nintendo", "xbox"];
-
-interface CardProps {
-  id: string;
-  title: string;
-  platform: string;
-  updateStatus: (status: string, id: string) => Promise<void>;
-  img?: string;
-}
-
-function Card({ id, title, img, platform, updateStatus }: CardProps) {
-  return (
-    <>
-      <Dialog>
-        <DialogTrigger asChild>
-          <div className="image-full relative h-48 w-48 rounded-sm shadow-sm cursor-pointer">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="absolute stroke-white top-2 right-1 w-fit border-transparent p-0">
-                <MoreVertical className="stroke-slate-400" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onSelect={() => updateStatus("backlog", id)}>
-                  To Backlog
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onSelect={() => updateStatus("in-progress", id)}
-                >
-                  Start
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onSelect={() => updateStatus("completed", id)}
-                >
-                  Complete
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onSelect={() => updateStatus("abandoned", id)}
-                >
-                  Abandon
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <figure>
-              <Image
-                priority
-                alt={`${title} poster`}
-                src={img ? img : "https://placehold.jp/1000x1000.png"}
-                className="h-48 w-48 rounded-sm object-cover"
-                width={256}
-                height={256}
-              />
-            </figure>
-            <div className="max-h-1/3 absolute  bottom-0 left-0 w-full ">
-              <div className="rounded-b-sm bg-gradient-to-r from-[#2d2d2d] to-transparent p-2 md:py-4 md:pl-4">
-                <h2 className="mb-2 truncate text-[1.2em] font-bold text-white">
-                  {title}
-                </h2>
-                <Badge
-                  variant="platform"
-                  className={cn("capitalize text-white", {
-                    "bg-nintendo": platform.toLowerCase() === "nintendo",
-                    "bg-playstation": platform.toLowerCase() === "playstation",
-                    "bg-xbox": platform.toLowerCase() === "xbox",
-                    "bg-pc uppercase": platform.toLowerCase() === "pc",
-                  })}
-                >
-                  {platform}
-                </Badge>
-              </div>
-            </div>
-          </div>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-          </DialogHeader>
-          <div>Content</div>
-          <DialogFooter>
-            <Button variant="destructive">Delete game</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
 
 function FiltersList({
   changeFilter,
@@ -127,7 +21,7 @@ function FiltersList({
   changeFilter: (filter: string) => void;
 }) {
   return (
-    <>
+    <div className="sticky z-10">
       <Label>Platform Filters</Label>
       <div className="w-full">
         <Badge className="mr-2 cursor-pointer" onClick={() => changeFilter("")}>
@@ -151,7 +45,7 @@ function FiltersList({
             )
         )}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -202,26 +96,30 @@ export default function List() {
   }, [list, platformFilter, params]);
 
   const updateStatus = async (status: string, id: string) => {
-    await changeGameStatus(status, id);
+    await firestoreOperations.changeStatus(status, id);
   };
 
   return (
-    <div className="py-4">
+    <div className="flex-col py-4">
       <FiltersList changeFilter={setPlatformFilter} />
-      <div className="mt-4 flex flex-wrap justify-start gap-4">
-        {filteredGames.map(({ title, platform, img, id, ...rest }) => {
-          console.log(rest);
-          return (
-            <Card
-              key={id}
-              id={id}
-              title={title}
-              img={img}
-              platform={platform}
-              updateStatus={updateStatus}
-            />
-          );
-        })}
+      <div className="py-4 overflow-hidden">
+        <ScrollArea className="w-full">
+          <div className="w-full mt-4 flex flex-wrap justify-start gap-4 min-h-[600px] max-h-[1200px]">
+            {filteredGames.map(({ title, platform, img, id, ...rest }) => {
+              return (
+                <Card
+                  key={id}
+                  id={id}
+                  title={title}
+                  img={img}
+                  platform={platform}
+                  review={rest.review}
+                  updateStatus={updateStatus}
+                />
+              );
+            })}
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );

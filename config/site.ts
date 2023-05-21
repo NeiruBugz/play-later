@@ -2,8 +2,7 @@ export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
   name: "PlayLater",
-  description:
-    "Game backlog app",
+  description: "Game backlog app",
   mainNav: [],
   sideNav: [
     {

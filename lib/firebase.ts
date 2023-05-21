@@ -3,6 +3,7 @@ import { getAuth } from "firebase/auth";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getFirestore,
   updateDoc,
@@ -36,4 +37,39 @@ const changeGameStatus = async (status: string, gameId: string) => {
   }
 };
 
-export { firebaseApp, firebaseAuth, firebaseDB, addGame, changeGameStatus };
+const deleteGame = async (gameId: string) => {
+  const ref = doc(firebaseDB, "games", gameId);
+  try {
+    await deleteDoc(ref);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const addReview = async (gameId: string, review: string) => {
+  const ref = doc(firebaseDB, "games", gameId);
+  try {
+    await updateDoc(ref, {
+      review: review,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const firestoreOperations = Object.assign({
+  add: addGame,
+  delete: deleteGame,
+  changeStatus: changeGameStatus,
+  addReview: addReview,
+});
+
+export {
+  firebaseApp,
+  firebaseAuth,
+  firebaseDB,
+  addGame,
+  changeGameStatus,
+  deleteGame,
+  firestoreOperations,
+};

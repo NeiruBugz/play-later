@@ -4,9 +4,6 @@ const nextConfig = {
   images: {
     domains: ["howlongtobeat.com", "placehold.jp"],
   },
-  experimental: {
-    appDir: true,
-  },
-}
+};
 
-export default nextConfig
+export default nextConfig;

@@ -12,12 +12,19 @@ async function search(title: string): Promise<any[]> {
   return data;
 }
 
-export function useSearch(searchTerm: string) {
+export function useSearch(searchTerm: string, enabled?: boolean) {
   return useQuery({
     queryKey: ["search", searchTerm],
     queryFn: () => search(searchTerm),
     retryDelay: 3000,
-    enabled: false,
+    enabled,
     initialData: [],
+  });
+}
+
+export function useGameInfo(searchTerm: string) {
+  return useQuery({
+    queryKey: ["gameInfo", searchTerm],
+    queryFn: () => search(searchTerm),
   });
 }

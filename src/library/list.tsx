@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const platformFilters = ["", "playstation", "nintendo", "xbox"];
 
@@ -60,6 +61,7 @@ export default function List() {
   );
   const [list, setList] = React.useState<any[]>([]);
   const [platformFilter, setPlatformFilter] = React.useState("");
+  console.log(loading);
 
   React.useEffect(() => {
     if (!loading) {
@@ -118,6 +120,29 @@ export default function List() {
                 />
               );
             })}
+            {loading && (
+              <>
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+                <Skeleton className="h-48 w-48" />
+              </>
+            )}
           </div>
         </ScrollArea>
       </div>

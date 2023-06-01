@@ -38,10 +38,10 @@ function SuggestBox({
   show?: boolean;
 }) {
   return results.length !== 0 && show ? (
-    <div className="absolute z-10 w-full rounded-md bg-background shadow-md p-1">
+    <div className="absolute z-10 w-full rounded-md bg-background p-1 shadow-md">
       {results.map((result) => (
         <div
-          className="px-2 py-1 hover:bg-slate-300 hover:rounded-sm cursor-pointer"
+          className="cursor-pointer px-2 py-1 hover:rounded-sm hover:bg-slate-300"
           key={result.id}
           onClick={() =>
             onSelect({
@@ -117,7 +117,7 @@ export default function Form() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
-      <div className="w-full relative">
+      <div className="relative w-full">
         <Label htmlFor="title">Game Title</Label>
         <Input
           type="text"

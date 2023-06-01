@@ -1,15 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { HowLongToBeatEntry } from "howlongtobeat";
 
-async function search(title: string): Promise<any[]> {
-  const headers = new Headers();
-  headers.append("Access-Control-Allow-Origin", "*");
-  const request = await fetch(
-    `https://backlog-app-nest.vercel.app/api/v1/search/${title}`,
-    { headers }
-  );
-  const data = await request.json();
+async function search(title: string): Promise<HowLongToBeatEntry[]> {
+  const request = await fetch(`api/search?q=${title}`);
+  const { response } = await request.json();
 
-  return data;
+  return response;
 }
 
 export function useSearch(searchTerm: string, enabled?: boolean) {

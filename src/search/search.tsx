@@ -50,7 +50,10 @@ export default function Search() {
             Close
           </Button>
         </div>
-        <form className="flex w-full gap-2" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="mb-2 flex w-full gap-2"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <Input
             type="search"
             className="bg-background"
@@ -63,7 +66,7 @@ export default function Search() {
           {data.length !== 0
             ? data.map((game) => {
                 return (
-                  <Card key={game.id} className="my-2">
+                  <Card key={game.id} className="mb-2 last-of-type:mb-0">
                     <CardContent className="flex flex-row-reverse justify-end gap-4 p-3">
                       <div className="flex flex-col gap-2">
                         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
@@ -76,7 +79,7 @@ export default function Search() {
                           {game.platforms.map((platform: string) => {
                             return (
                               <Badge
-                                className={cn("capitalize text-white", {
+                                className={cn("mr-1 capitalize text-white", {
                                   "bg-nintendo":
                                     platform.toLowerCase() === "nintendo" ||
                                     platform.toLowerCase().includes("nintendo"),

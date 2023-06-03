@@ -46,9 +46,9 @@ export function Card({
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <div className="image-full relative h-48 w-48 rounded-sm shadow-sm cursor-pointer">
+          <div className="image-full relative h-40 w-40 cursor-pointer rounded-sm shadow-sm duration-100 ease-in hover:scale-[1.05] sm:h-48 sm:w-48">
             <DropdownMenu>
-              <DropdownMenuTrigger className="absolute stroke-white top-2 right-1 w-fit border-transparent p-0">
+              <DropdownMenuTrigger className="absolute right-1 top-2 w-fit border-transparent stroke-white p-0">
                 <MoreVertical className="stroke-slate-400" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -77,7 +77,7 @@ export function Card({
                 priority
                 alt={`${title} poster`}
                 src={img ? img : "https://placehold.jp/1000x1000.png"}
-                className="h-48 w-48 rounded-sm bg-slate-400/60 object-scale-down"
+                className="h-40 w-40 rounded-sm bg-slate-400/60 object-scale-down sm:h-48 sm:w-48"
                 width={256}
                 height={256}
               />

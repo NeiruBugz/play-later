@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { statusToReadable } from "./utils";
+
 const platformFilters = ["", "playstation", "nintendo", "xbox"];
 
 function FiltersList({
@@ -22,7 +24,7 @@ function FiltersList({
   changeFilter: (filter: string) => void;
 }) {
   return (
-    <div className="sticky z-10">
+    <div className="sticky z-10 my-2">
       <Label>Platform Filters</Label>
       <div className="w-full">
         <Badge className="mr-2 cursor-pointer" onClick={() => changeFilter("")}>
@@ -61,7 +63,6 @@ export default function List() {
   );
   const [list, setList] = React.useState<any[]>([]);
   const [platformFilter, setPlatformFilter] = React.useState("");
-  console.log(loading);
 
   React.useEffect(() => {
     if (!loading) {
@@ -102,11 +103,14 @@ export default function List() {
   };
 
   return (
-    <div className="flex-col py-4">
+    <div className="flex grow flex-col py-4">
+      <h3 className="font-bold capitalize">
+        Status: {statusToReadable(params.get("status") ?? "")}
+      </h3>
       <FiltersList changeFilter={setPlatformFilter} />
-      <div className="py-4 overflow-hidden">
-        <ScrollArea className="w-full">
-          <div className="w-full mt-4 flex flex-wrap justify-start gap-4 min-h-[600px] max-h-[1200px]">
+      <div className="mb-12 overflow-hidden py-4 ">
+        <ScrollArea className="h-full w-full">
+          <div className="mt-4 flex w-full flex-wrap justify-start gap-4">
             {filteredGames.map(({ title, platform, img, id, ...rest }) => {
               return (
                 <Card

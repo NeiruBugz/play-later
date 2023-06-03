@@ -74,7 +74,7 @@ export function CardDialog({
   const game = gameInfo?.find(({ name }) => name === title);
   return game ? (
     <>
-      <div className="flex gap-4 flex-wrap w-full">
+      <div className="flex w-full flex-wrap gap-4">
         <Image
           width={250}
           height={250}
@@ -89,7 +89,7 @@ export function CardDialog({
             <Badge>Completionist: {game.gameplayCompletionist}</Badge>
           </div>
           <Label>Platforms</Label>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex flex-wrap gap-2">
             {game.platforms.map((platform: string) => (
               <Badge className="whitespace-nowrap" key={platform}>
                 {platform}
@@ -109,17 +109,17 @@ export function CardDialog({
     </>
   ) : (
     <>
-      <div className="flex gap-4 flex-wrap w-full">
-        <Skeleton className="w-[250px] h-[250px]" />
+      <div className="flex w-full flex-wrap gap-4">
+        <Skeleton className="h-[250px] w-[250px]" />
         <div className="flex flex-col gap-2">
-          <Skeleton className="w-full h-4" />
+          <Skeleton className="h-4 w-full" />
           <div className="flex gap-2">
             <Skeleton className="h-5 w-[120px]" />
             <Skeleton className="h-5 w-[120px]" />
             <Skeleton className="h-5 w-[120px]" />
           </div>
-          <Skeleton className="w-full h-4" />
-          <div className="flex gap-2 flex-wrap">
+          <Skeleton className="h-4 w-full" />
+          <div className="flex flex-wrap gap-2">
             <Skeleton className="h-5 w-[120px]" />
             <Skeleton className="h-5 w-[120px]" />
             <Skeleton className="h-5 w-[120px]" />

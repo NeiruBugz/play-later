@@ -44,7 +44,7 @@ export default function Search() {
 
   return (
     <div className="t-0 l-0 absolute z-50 flex h-screen w-screen flex-col bg-slate-400/50 pt-11">
-      <div className="container">
+      <div className="container max-h-screen">
         <div className="flex w-full flex-row-reverse py-4">
           <Button variant="secondary" onClick={() => router.back()}>
             Close
@@ -59,7 +59,7 @@ export default function Search() {
           />
           <Button>Search</Button>
         </form>
-        <ScrollArea>
+        <ScrollArea className="h-[670px]">
           {data.length !== 0
             ? data.map((game) => {
                 return (

@@ -13,7 +13,7 @@ export default function Profile() {
       <Avatar>
         <AvatarImage src={avatarUrl} />
       </Avatar>
-      <Label className="font-semibold">{username}</Label>
+      <Label className="hidden font-semibold sm:block">{username}</Label>
     </div>
   );
 }

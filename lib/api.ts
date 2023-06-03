@@ -2,10 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { HowLongToBeatEntry } from "howlongtobeat";
 
 async function search(title: string): Promise<HowLongToBeatEntry[]> {
-  const request = await fetch(`api/search?q=${title}`);
-  const { response } = await request.json();
+  if (title) {
+    const request = await fetch(`api/search?q=${title}`);
+    const { response } = await request.json();
 
-  return response;
+    return response;
+  } else {
+    return [];
+  }
 }
 
 export function useSearch(searchTerm: string, enabled?: boolean) {

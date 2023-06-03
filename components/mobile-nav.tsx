@@ -8,11 +8,11 @@ import { cn } from "@/lib/utils";
 
 import { Button } from "./ui/button";
 
-export default function SideNav() {
+export default function MobileNav() {
   const pathname = usePathname();
   const params = useSearchParams();
   return (
-    <div className="hidden h-screen border-r bg-background py-4 pr-6 md:block">
+    <>
       {siteConfig.sideNav.map((nav) => {
         const isActive = pathname.startsWith(nav.href);
         return (
@@ -41,6 +41,6 @@ export default function SideNav() {
           </nav>
         );
       })}
-    </div>
+    </>
   );
 }
